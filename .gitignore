@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 # Custom
 data/
+embeddings/
 
 ### Python template
 # Byte-compiled / optimized / DLL files
