@@ -1,10 +1,18 @@
 import json
 import random
+import logging
 import torch
 from torchtext import data
 
 from amazon_review_sentiment import settings
 from amazon_review_sentiment.data import keys
+
+logging.basicConfig(
+    level=logging.INFO,
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
 FILE_NAME = "toys_small"
 
@@ -12,6 +20,7 @@ FILE_NAME = "toys_small"
 class ToysDataSmall:
     def __init__(self, max_vocab_size=25000, batch_size=32):
         torch.manual_seed(settings.SEED_VALUE)
+        torch.backends.cudnn.enabled = True
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
         self.load_data()
@@ -35,45 +44,54 @@ class ToysDataSmall:
             keys.DATA_TYPE_TEST: self.test_iter
         }[type]
 
+    def get_text_vocab(self):
+        if not self.data:
+            self.load_data()
+        return self.text_vocab
+
     def load_data(self):
         self.convert_file_to_proper_json(settings.data_path(f"{FILE_NAME}.json"))
 
         TEXT = data.Field(tokenize = "spacy")
         LABEL = data.LabelField(dtype = torch.float)
 
+        logging.info(f"Creating TabularDataset from {FILE_NAME}.json.proper.")
         self.data = data.TabularDataset(
             path=settings.data_path(f"{FILE_NAME}.json.proper"), format="json",
             fields={"reviewText": ("text", TEXT), "overall": ("label", LABEL)}
         )
 
+        logging.info(f"Creating train, val, and test split.")
         self.train_data, self.val_data, self.test_data = self.data.split(
             split_ratio=[0.4, 0.3, 0.3],
             random_state = random.seed(settings.SEED_VALUE)
         )
 
+        logging.info(f"Building text and label vocabularies.")
         TEXT.build_vocab(self.train_data, max_size=self.max_vocab_size)
         LABEL.build_vocab(self.train_data)
 
         self.text_vocab = TEXT.vocab
         self.label_vocab = LABEL.vocab
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        logging.info(f"Creating data iterators.")
         self.train_iter, self.val_iter, self.test_iter = data.BucketIterator.splits(
             (self.train_data, self.val_data, self.test_data),
             batch_size=self.batch_size,
-            device=device
+            device=settings.TORCH_DEVICE,
+            sort_key=lambda x: len(x.text),
+            sort_within_batch=False
         )
 
     def convert_file_to_proper_json(self, path):
+        logging.info(f"Converting {path} to a proper JSON file.")
         orig_json = open(path, "r")
         result_file = open(f"{path}.proper", "w")
-        counter = 0
         for line in orig_json:
-            counter += 1
-            if counter > 10: break
             line_data = json.loads(line)
             if "reviewText" in line_data and "overall" in line_data:
                 result_file.write(json.dumps(json.loads(line)) + "\n")
+        logging.info(f"Finished converting {path} to a proper JSON file.")
 
 
 

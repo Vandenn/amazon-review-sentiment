@@ -2,6 +2,7 @@
 # Custom
 /data/
 /embeddings/
+/models/
 
 ### Python template
 # Byte-compiled / optimized / DLL files
