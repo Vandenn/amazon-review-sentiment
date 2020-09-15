@@ -9,11 +9,11 @@ EMBEDDINGS_FOLDER = os.path.join(PROJECT_ROOT, "embeddings")
 
 
 def data_path(path, *paths):
-    construct_path(DATA_FOLDER, path, *paths)
+    return construct_path(DATA_FOLDER, path, *paths)
 
 
 def embeddings_path(path, *paths):
-    construct_path(EMBEDDINGS_FOLDER, path, *paths)
+    return construct_path(EMBEDDINGS_FOLDER, path, *paths)
 
 
 def construct_path(folder_dir, path, *paths):
