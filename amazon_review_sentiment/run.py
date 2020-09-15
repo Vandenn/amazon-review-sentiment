@@ -61,7 +61,7 @@ def binary_accuracy(preds, y):
 
 if __name__ == "__main__":
     torch.manual_seed(settings.SEED_VALUE)
-    torch.backends.cudnn.enabled = True
+    torch.backends.cudnn.enabled = False
 
     data_object = ToysDataSmall()
     data_text_vocab = data_object.get_text_vocab()
@@ -87,13 +87,13 @@ if __name__ == "__main__":
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), settings.MODELS_FOLDER("model1.pt"))
+            torch.save(model.state_dict(), settings.models_path("model1.pt"))
 
         logging.info(f"Epoch: {epoch+1}")
         logging.info(f"\nTrain Loss: {train_loss:.3f} | Train Acc.: {train_acc:.3f}%")
         logging.info(f"\nValidation Loss: {val_loss:.3f} | Validation Acc.: {val_acc:.3f}%")
 
-    model.load_state_dict(torch.load(settings.MODELS_FOLDER("model1.pt")))
+    model.load_state_dict(torch.load(settings.models_path("model1.pt")))
     test_loss, test_acc = evaluate_model(model, test_iter, criterion)
     logging.info(f"\nTest Loss: {test_loss:.3f} | Test Acc.: {test_acc:.3f}%")
 
