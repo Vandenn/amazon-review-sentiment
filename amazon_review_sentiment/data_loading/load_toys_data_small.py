@@ -1,4 +1,5 @@
 import json
+import torch
 from torchtext import data
 
 from amazon_review_sentiment import settings
@@ -18,8 +19,8 @@ def convert_file_to_proper_json(path):
 def load_toys_data_small():
     convert_file_to_proper_json(settings.data_path(f"{FILE_NAME}.json"))
 
-    TEXT = data.Field()
-    LABEL = data.LabelField()
+    TEXT = data.Field(tokenize = "spacy")
+    LABEL = data.LabelField(dtype = torch.float)
 
     toys_data_small = data.TabularDataset(
         path=settings.data_path(f"{FILE_NAME}.json.proper"), format="json",
