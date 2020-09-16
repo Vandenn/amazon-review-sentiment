@@ -62,7 +62,7 @@ def binary_accuracy(preds, y):
 if __name__ == "__main__":
     torch.manual_seed(settings.SEED_VALUE)
 
-    data_object = ToysDataSmall()
+    data_object = ToysDataSmall(data_limit_in_proper_json=settings.LOCAL_DATA_LIMIT)
     data_text_vocab = data_object.get_text_vocab()
     train_iter = data_object.get_iter(keys.DATA_TYPE_TRAIN)
     val_iter = data_object.get_iter(keys.DATA_TYPE_VAL)

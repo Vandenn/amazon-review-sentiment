@@ -106,7 +106,7 @@ class ToysDataSmall:
 
 
 if __name__ == "__main__":
-    toys_data_small_object = ToysDataSmall()
+    toys_data_small_object = ToysDataSmall(data_limit_in_proper_json=settings.LOCAL_DATA_LIMIT)
     toys_data_small = toys_data_small_object.get_data()
     print(f"Data count: {len(toys_data_small.examples)}")
     print(f"Example: {vars(toys_data_small.examples[0])}")

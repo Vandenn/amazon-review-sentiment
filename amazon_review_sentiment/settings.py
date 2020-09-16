@@ -4,6 +4,7 @@ import torch
 
 SEED_VALUE = 42
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+LOCAL_DATA_LIMIT = 75000
 TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 DATA_FOLDER = os.path.join(PROJECT_ROOT, "data")
