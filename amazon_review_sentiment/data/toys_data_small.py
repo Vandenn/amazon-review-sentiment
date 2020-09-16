@@ -18,10 +18,14 @@ FILE_NAME = "toys_small"
 
 
 class ToysDataSmall:
-    def __init__(self, max_vocab_size=25000, batch_size=32, pos_threshold=2.5):
+    def __init__(self, max_vocab_size=25000, batch_size=32,
+                 data_count_limit=-1, generate_proper_json=True,
+                 pos_threshold=2.5):
         torch.manual_seed(settings.SEED_VALUE)
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
+        self.data_count_limit = data_count_limit
+        self.generate_proper_json = generate_proper_json
         self.pos_threshold = pos_threshold
         self.load_data()
 
@@ -50,7 +54,8 @@ class ToysDataSmall:
         return self.text_vocab
 
     def load_data(self):
-        self.convert_file_to_proper_json(settings.data_path(f"{FILE_NAME}.json"))
+        if self.generate_proper_json:
+            self.convert_file_to_proper_json(settings.data_path(f"{FILE_NAME}.json"))
 
         TEXT = data.Field(tokenize = "spacy")
         LABEL = data.LabelField(dtype = torch.float)
@@ -87,7 +92,11 @@ class ToysDataSmall:
         logging.info(f"Converting {path} to a proper JSON file.")
         orig_json = open(path, "r")
         result_file = open(f"{path}.proper", "w")
+        count = 0
         for line in orig_json:
+            count += 1
+            if self.data_count_limit > 0 and count > self.data_count_limit:
+                break
             line_data = json.loads(line)
             if "reviewText" in line_data and "overall" in line_data:
                 line_data["overall"] = "pos" if line_data["overall"] > self.pos_threshold else "neg"
