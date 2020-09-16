@@ -113,5 +113,5 @@ if __name__ == "__main__":
     print(f"Text vocab length: {len(toys_data_small_object.text_vocab)}")
     print(f"Text vocab examples: {toys_data_small_object.text_vocab.itos[:10]}")
     print(f"Label vocab: {toys_data_small_object.label_vocab.stoi}")
-    print(f"Label vocab frequencies: {toys_data_small_object.label_vocab.freqs.most_common(3)}")
+    print(f"Label vocab frequencies: {toys_data_small_object.label_vocab.freqs.most_common(2)}")
 
