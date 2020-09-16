@@ -20,7 +20,7 @@ FILE_NAME = "toys_small"
 class ToysDataSmall:
     def __init__(self, max_vocab_size=25000, batch_size=32,
                  generate_proper_json=True, data_limit_in_proper_json=-1,
-                 pos_threshold=4.0):
+                 pos_threshold=3.0):
         torch.manual_seed(settings.SEED_VALUE)
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
