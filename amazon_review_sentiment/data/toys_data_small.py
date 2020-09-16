@@ -20,7 +20,7 @@ FILE_NAME = "toys_small"
 class ToysDataSmall:
     def __init__(self, max_vocab_size=25000, batch_size=32,
                  generate_proper_json=True, data_limit_in_proper_json=-1,
-                 pos_threshold=2.5):
+                 pos_threshold=4.0):
         torch.manual_seed(settings.SEED_VALUE)
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
@@ -94,11 +94,11 @@ class ToysDataSmall:
         result_file = open(f"{path}.proper", "w")
         count = 0
         for line in orig_json:
-            count += 1
-            if self.data_limit_in_proper_json > 0 and count > self.data_limit_in_proper_json:
-                break
             line_data = json.loads(line)
             if "reviewText" in line_data and "overall" in line_data:
+                count += 1
+                if self.data_limit_in_proper_json > 0 and count > self.data_limit_in_proper_json:
+                    break
                 line_data["overall"] = "pos" if line_data["overall"] > self.pos_threshold else "neg"
                 result_file.write(json.dumps(line_data) + "\n")
         logging.info(f"Finished converting {path} to a proper JSON file.")
@@ -110,6 +110,8 @@ if __name__ == "__main__":
     toys_data_small = toys_data_small_object.get_data()
     print(f"Data count: {len(toys_data_small.examples)}")
     print(f"Example: {vars(toys_data_small.examples[0])}")
-    print(f"Text vocab: {toys_data_small_object.text_vocab.itos[:10]}")
+    print(f"Text vocab length: {len(toys_data_small_object.text_vocab)}")
+    print(f"Text vocab examples: {toys_data_small_object.text_vocab.itos[:10]}")
     print(f"Label vocab: {toys_data_small_object.label_vocab.stoi}")
+    print(f"Label vocab frequencies: {toys_data_small_object.label_vocab.freqs.most_common(3)}")
 
