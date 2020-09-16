@@ -61,7 +61,6 @@ def binary_accuracy(preds, y):
 
 if __name__ == "__main__":
     torch.manual_seed(settings.SEED_VALUE)
-    torch.backends.cudnn.enabled = False
 
     data_object = ToysDataSmall()
     data_text_vocab = data_object.get_text_vocab()

@@ -20,7 +20,6 @@ FILE_NAME = "toys_small"
 class ToysDataSmall:
     def __init__(self, max_vocab_size=25000, batch_size=32):
         torch.manual_seed(settings.SEED_VALUE)
-        torch.backends.cudnn.enabled = False
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
         self.load_data()
