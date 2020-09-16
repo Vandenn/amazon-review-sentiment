@@ -18,10 +18,11 @@ FILE_NAME = "toys_small"
 
 
 class ToysDataSmall:
-    def __init__(self, max_vocab_size=25000, batch_size=32):
+    def __init__(self, max_vocab_size=25000, batch_size=32, pos_threshold=2.5):
         torch.manual_seed(settings.SEED_VALUE)
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
+        self.pos_threshold = pos_threshold
         self.load_data()
 
     def get_data(self, type=keys.DATA_TYPE_ALL):
@@ -89,7 +90,8 @@ class ToysDataSmall:
         for line in orig_json:
             line_data = json.loads(line)
             if "reviewText" in line_data and "overall" in line_data:
-                result_file.write(json.dumps(json.loads(line)) + "\n")
+                line_data["overall"] = "pos" if line_data["overall"] > self.pos_threshold else "neg"
+                result_file.write(json.dumps(line_data) + "\n")
         logging.info(f"Finished converting {path} to a proper JSON file.")
 
 
