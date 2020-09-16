@@ -19,12 +19,12 @@ FILE_NAME = "toys_small"
 
 class ToysDataSmall:
     def __init__(self, max_vocab_size=25000, batch_size=32,
-                 data_count_limit=-1, generate_proper_json=True,
+                 generate_proper_json=True, data_limit_in_proper_json=-1,
                  pos_threshold=2.5):
         torch.manual_seed(settings.SEED_VALUE)
         self.max_vocab_size = max_vocab_size
         self.batch_size = batch_size
-        self.data_count_limit = data_count_limit
+        self.data_limit_in_proper_json = data_limit_in_proper_json
         self.generate_proper_json = generate_proper_json
         self.pos_threshold = pos_threshold
         self.load_data()
@@ -95,7 +95,7 @@ class ToysDataSmall:
         count = 0
         for line in orig_json:
             count += 1
-            if self.data_count_limit > 0 and count > self.data_count_limit:
+            if self.data_limit_in_proper_json > 0 and count > self.data_limit_in_proper_json:
                 break
             line_data = json.loads(line)
             if "reviewText" in line_data and "overall" in line_data:
